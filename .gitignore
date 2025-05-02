@@ -1,0 +1,17 @@
+# Ignore Python bytecode and cache
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environments
+windows_venv/
+
+# Ignore Django database
+db.sqlite3
+
+# Ignore media and static files
+media/
+staticfiles/
+
+# Ignore IDE and OS-specific files
+.vscode/
+.DS_Store

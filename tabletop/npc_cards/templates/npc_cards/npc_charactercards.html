@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC Character Cards</title>
+</head>
+<body>
+    <h1>NPC Character Cards</h1>
+    <ul>
+        {% for npc_card in npc_cards %}
+            <li>
+                <img src="{{ npc_card.image_url.url }}" alt="{{ npc_card.image_url.url }} image" style="max-width: 200px; max-height: 200px;"><br>
+                <strong>Name:</strong> {{ npc_card.name }}<br>
+                <strong>Race:</strong> {{ npc_card.race }}<br>
+                <strong>Alignment:</strong> {{ npc_card.alignment }}<br>
+                <strong>Armor Class:</strong> {{ npc_card.armor_class }}<br>
+                <strong>Health Points:</strong> {{ npc_card.health_points }}<br>
+                <strong>Strength:</strong> {{ npc_card.strength }}<br>
+                <strong>Dexterity:</strong> {{ npc_card.dexterity }}<br>
+                <strong>Constitution:</strong> {{ npc_card.constitution }}<br>
+                <strong>Intelligence:</strong> {{ npc_card.intelligence }}<br>
+                <strong>Wisdom:</strong> {{ npc_card.wisdom }}<br>
+                <strong>Charisma:</strong> {{ npc_card.charisma }}<br>
+                <strong>Speed:</strong> {{ npc_card.speed }}<br>
+                <strong>Challenge Rating:</strong> {{ npc_card.challange_rating }}<br>
+                <strong>XP Gain:</strong> {{ npc_card.xp_gain }}<br>
+                <strong>Skills:</strong><br>
+                <ul>
+                    {% for skill in npc_card.skills.all %}
+                        <li>{{ skill.name }}: {{ skill.description }}</li>
+                    {% endfor %}
+                </ul>
+                <strong>Damage Resistances:</strong><br>
+                <ul>
+                    {% for resistance in npc_card.damage_resistances.all %}
+                        <li>{{ resistance.name }}: {{ resistance.fraction }}</li>
+                    {% endfor %}
+                </ul>
+                <strong>Senses:</strong><br>
+                <ul>
+                    {% for sense in npc_card.senses.all %}
+                        <li>{{ sense.name }}: {{ sense.description }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <p>No NPC Character Cards available.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
