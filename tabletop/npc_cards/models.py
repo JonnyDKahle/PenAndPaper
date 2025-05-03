@@ -44,20 +44,55 @@ class NPCCharacterCard(models.Model):
     skills = models.ManyToManyField('Skill', related_name='npc_cards_skills', blank=True)
     damage_resistances = models.ManyToManyField('DamageResistance', related_name='npc_cards_damage_resistances', blank=True)
     senses = models.ManyToManyField('Sense', related_name='npc_cards_senses', blank=True)
+    def __str__(self):
+        return self.name
+    
+class NPCInstance(NPCCharacterCard):
+    Name = models.CharField(max_length=100, default="NPC")
+    location = models.ForeignKey('Location', on_delete=models.CASCADE, related_name='location_npc')
+    def __str__(self):
+        return self.name
 
 
 class Skill(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    def __str__(self):
+        return self.name
 
 class DamageResistance(models.Model):
     name = models.CharField(max_length=100)
     fraction = models.FloatField(help_text='Fraction of damage taken, e.g., 0.25 for 25% damage taken.')
+    def __str__(self):
+        return self.name
 
 class Sense(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    def __str__(self):
+        return self.name
 
 
-class NPCCharacterCardBorrowed(NPCCharacterCard):
-    pass
+
+class Item(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    def __str__(self):
+        return self.name
+
+class Universe(models.Model):
+    name = models.CharField(max_length=100)
+    # FK to the GameMaster (Who is just a user)
+    def __str__(self):
+        return self.name
+    
+class Location(models.Model): # has: npcs, items # is part of: universe
+    name = models.CharField(max_length=100)
+    story = models.TextField(null=True, blank=True)
+    secret = models.TextField(blank=True, null=True)
+    universe = models.ForeignKey('Universe', on_delete=models.CASCADE)
+    parent_location = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='sub_locations')
+    # npcs, ManyToOne trough FK in NPCInstance
+    items = models.ManyToManyField('Item', blank=True, null=True)
+    def __str__(self):
+        return self.name
