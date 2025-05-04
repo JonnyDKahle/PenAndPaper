@@ -1,0 +1,10 @@
+{% if location.sub_locations.all %}
+    <ul>
+        {% for sublocation in location.sub_locations.all %}
+            <li>
+                {{sublocation.name}}
+                {% include "npc_cards/location_tree.html" with location=sublocation %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

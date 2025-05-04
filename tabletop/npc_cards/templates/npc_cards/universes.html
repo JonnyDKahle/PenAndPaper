@@ -12,10 +12,17 @@
         <li><strong>{{ universe.name }}</strong></li>
         <ul>
             {% for location in universe.locations.all %}
-                <li>{{ location.name }}</li>
+                {% if not location.parent_location %}
+                <li>
+                    {{ location.name }}
+                    {% include "npc_cards/location_tree.html" with location=location %}
+                </li>
+                {% endif %}
             {% endfor %}
         </ul>
-    {% endfor %}
+        {% empty %}
+        <li>No universes availiable</li>
+        {% endfor %}
     </ul>
 </body>
 </html>
