@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC Character Cards</title>
+</head>
+<body>
+    <h1>Universes</h1>
+    <ul>
+        {% for universe in all_universes %}
+        <li><strong>{{ universe.name }}</strong></li>
+        <ul>
+            {% for location in universe.locations.all %}
+                <li>{{ location.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
+</body>
+</html>

@@ -90,9 +90,9 @@ class Location(models.Model): # has: npcs, items # is part of: universe
     name = models.CharField(max_length=100)
     story = models.TextField(null=True, blank=True)
     secret = models.TextField(blank=True, null=True)
-    universe = models.ForeignKey('Universe', on_delete=models.CASCADE)
+    universe = models.ForeignKey('Universe', on_delete=models.CASCADE, related_name='locations', null=True)
     parent_location = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='sub_locations')
     # npcs, ManyToOne trough FK in NPCInstance
-    items = models.ManyToManyField('Item', blank=True, null=True)
+    items = models.ManyToManyField('Item', blank=True)
     def __str__(self):
         return self.name

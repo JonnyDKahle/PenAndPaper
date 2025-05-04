@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import NPCCharacterCard
+from .models import NPCCharacterCard, Universe
 
 # Create your views here.
 
@@ -11,3 +11,12 @@ def NPCCharacterCardsView(request):
 
     context = {'npc_cards':all_characters}
     return render(request, 'npc_cards/npc_charactercards.html', context=context)
+
+def UniverseView(request):
+    all_universes = Universe.objects.all()
+
+    context = {'all_universes':all_universes}
+    return render(request, 'npc_cards/universes.html', context=context)
+
+# def LocationView(request):
+#     specific
