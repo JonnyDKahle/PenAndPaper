@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import NPCCharacterCard, Universe, Location
+from .forms import LocationForm
 
 # Create your views here.
 
@@ -19,7 +20,7 @@ def UniverseView(request):
     return render(request, 'npc_cards/universes.html', context=context)
 
 def LocationDetailView(request, id):
-    location = Location.objects.get(id=id)
+    location = get_object_or_404(Location, id=id)
 
     context = {'location':location}
     return render(request, 'npc_cards/location_detail.html', context=context)

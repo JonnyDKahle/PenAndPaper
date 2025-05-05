@@ -7,6 +7,68 @@
 </head>
 <body>
     <h1>{{location.name}}</h1>
+    
+    <dl>
+        <dt>Story:</dt>
+        <dd>{{ location.story|default:"No story available" }}</dd>
+        
+        <dt>Universe:</dt>
+        <dd>{{ location.universe.name|default:"No universe assigned" }}</dd>
+        
+        <dt>Parent Location:</dt>
+        <dd>{{ location.parent_location.name|default:"Top-level location" }}</dd>
+        
+        <dt>Items:</dt>
+        <dd>
+            <ul>
+                {% for item in location.items.all %}
+                    <li>{{ item.name }}</li>
+                {% empty %}
+                    <li>No items in this location</li>
+                {% endfor %}
+            </ul>
+        </dd>
+        
+        <dt>NPCs:</dt>
+        <dd>
+            <ul>
+                {% for npc in location.location_npc.all %}
+                    <li>{{ npc.name }}</li>
+                {% empty %}
+                    <li>No NPCs in this location</li>
+                {% endfor %}
+            </ul>
+        </dd>
+        
+        {% if location.parent_location %}
+        <dt>Parent Location</dt>
+        <dd>
+            <ul>
+                <li>
+                    <a href="{% url 'npc_cards:location' location.parent_location.id %}">{{ location.parent_location.name }}</a>
+                </li>
+            </ul>
+        </dd>
+        {% endif %}
 
+        <dt>Sub-locations:</dt>
+        <dd>
+            <ul>
+                {% for sublocation in location.sub_locations.all %}
+                    <li><a href="{% url 'npc_cards:location' sublocation.id %}">{{ sublocation.name }}</a></li>
+                {% empty %}
+                    <li>No sub-locations</li>
+                {% endfor %}
+            </ul>
+        </dd>
+    </dl>
+
+    
+    {% if location.secret %}
+        <div class="secret-info">
+            <h3>Secret Information (GM Only)</h3>
+            <p>{{ location.secret }}</p>
+        </div>
+    {% endif %}
 </body>
 </html>
