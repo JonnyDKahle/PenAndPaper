@@ -33,7 +33,7 @@
         <dd>
             <ul>
                 {% for npc in location.location_npc.all %}
-                    <li>{{ npc.name }}</li>
+                    <li>{{ npc.character_name }}</li>
                 {% empty %}
                     <li>No NPCs in this location</li>
                 {% endfor %}

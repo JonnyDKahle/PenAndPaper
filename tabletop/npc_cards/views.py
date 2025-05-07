@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import NPCCharacterCard, Universe, Location
-from .forms import LocationForm
+from .forms import LocationForm, NPCInstanceForm
 
 # Create your views here.
 
@@ -24,3 +24,14 @@ def LocationDetailView(request, id):
 
     context = {'location':location}
     return render(request, 'npc_cards/location_detail.html', context=context)
+
+def CreateNPCInstaceView(request):
+    if request.method == 'POST':
+        form = NPCInstanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = NPCInstanceForm
+
+    context = {'form':form}
+    return render(request, 'npc_cards/npcinstance_create.html', context=context)

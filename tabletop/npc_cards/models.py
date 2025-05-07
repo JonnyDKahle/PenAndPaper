@@ -15,7 +15,7 @@ class NPCCharacterCard(models.Model):
         ('dragonborn', 'Dragonborn'),
         ('gnome', 'Gnome'),
     ]
-    race = models.CharField(max_length=50, choices=RACE_CHOICES, blank=True)
+    race = models.CharField(max_length=50, choices=RACE_CHOICES, default='human', blank=True)
     ALIGNMENT_CHOICES = [
         ('lg', 'Lawful Good'),
         ('ng', 'Neutral Good'),
@@ -47,11 +47,18 @@ class NPCCharacterCard(models.Model):
     def __str__(self):
         return self.name
     
-class NPCInstance(NPCCharacterCard):
-    Name = models.CharField(max_length=100, default="NPC")
+class NPCInstance(models.Model):
+    character_card = models.ForeignKey('NPCCharacterCard', on_delete=models.CASCADE, related_name='npc_instances', null=True)
+    
+    character_name = models.CharField(max_length=100, default="NPC")
     location = models.ForeignKey('Location', on_delete=models.CASCADE, related_name='location_npc')
     def __str__(self):
-        return self.name
+        return f"{self.character_name} ({self.character_card.name})"
+    @property
+    def race(self):
+        return self.character_card.race
+    
+
 
 
 class Skill(models.Model):
