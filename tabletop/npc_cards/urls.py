@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, NPCCharacterCardsView, UniverseView, LocationDetailView, CreateNPCInstaceView
+from .views import index, NPCCharacterCardsView, UniverseView, LocationDetailView
 
 app_name = 'npc_cards'
 urlpatterns = [
@@ -7,5 +7,5 @@ urlpatterns = [
     path('npc_cards/', NPCCharacterCardsView),
     path('universes/', UniverseView),
     path('location/<int:id>/', LocationDetailView, name='location'),
-    path('create_npcinstance/', CreateNPCInstaceView, name='create_npcinstance'),
+    # path('create_npcinstance/', CreateNPCInstaceView, name='create_npcinstance'),
 ]

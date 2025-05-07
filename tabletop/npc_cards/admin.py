@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import NPCCharacterCard, Skill, DamageResistance, Sense, Universe, Location, NPCInstance, Item
+from .models import NPCCharacter, Skill, DamageResistance, Sense, Universe, Location, Item
 
 # Register your models here.
-admin.site.register(NPCCharacterCard)
+admin.site.register(NPCCharacter)
 admin.site.register(Skill)
 admin.site.register(DamageResistance)
 admin.site.register(Sense)
 admin.site.register(Universe)
 admin.site.register(Location)
-admin.site.register(NPCInstance)
 admin.site.register(Item)
