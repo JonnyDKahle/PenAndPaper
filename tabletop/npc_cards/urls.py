@@ -1,11 +1,20 @@
 from django.urls import path
-from .views import index, NPCCharacterCardsView, UniverseView, LocationDetailView
+from . import views
 
 app_name = 'npc_cards'
 urlpatterns = [
-    path('', index),
-    path('npc_cards/', NPCCharacterCardsView),
-    path('universes/', UniverseView),
-    path('location/<int:id>/', LocationDetailView, name='location'),
+    path('', views.index),
+    # path('npc_cards/', NPCCharacterCardsView),
+    path('universes/', views.UniverseView),
+    path('location/<int:id>/', views.LocationDetailView, name='location'),
     # path('create_npcinstance/', CreateNPCInstaceView, name='create_npcinstance'),
+
+    # Character & Blueprint URLs
+    path('blueprints/', views.blueprint_list, name='blueprint_list'),
+    path('blueprints/create/', views.create_blueprint, name='create_blueprint'),
+    path('blueprints/<int:id>/', views.character_detail, name='blueprint_detail'),
+
+    path('characters/', views.character_list, name='character_list'),
+    path('characters/create/', views.create_character, name='create_character'),
+    path('characters/<int:id>/', views.character_detail, name='character_detail'),
 ]
