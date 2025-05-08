@@ -12,9 +12,9 @@
 
     <ul>
         {% for blueprint in blueprints %}
-            <a href="{% url 'npc_cards:blueprint_detail' blueprint.id %}">{{ blueprint.name }}</a>
+            <li><a href="{% url 'npc_cards:blueprint_detail' blueprint.id %}">{{ blueprint.name }}</a></li>
         {% empty %}
-            <p>Not yet any blueprints.</p>
+        <li>Not yet any blueprints.</li>
         {% endfor %}
     </ul>
     

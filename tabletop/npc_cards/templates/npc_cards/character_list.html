@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC Characters</title>
+</head>
+<body>
+    <h1>NPC Characters</h1>
+
+    <a href="{% url 'npc_cards:create_character' %}">Create New Character</a>
+
+    <ul>
+    {% for character in characters %}
+        <li>
+            <a href="{% url 'npc_cards:character_detail' character.id %}">{{ character.name }}</a>
+            {% if location %}
+                {{ character.location.name }}
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No characters availiable.</li>
+    {% endfor %}
+    </ul>
+        
+</body>
+</html>

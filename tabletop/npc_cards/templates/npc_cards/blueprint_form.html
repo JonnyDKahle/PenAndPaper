@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character Blueprint</title>
+</head>
+<body>
+    <h1>Create Character Blueprint</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-field">
+                <label>{{ field.label }}:</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit">Create Blueprint</button>
+    </form>
+    
+    <a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a>
+</body>
+</html>

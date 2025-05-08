@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character</title>
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create New NPC Character</h1>
+    
+    <div class="tabs">
+        <button id="from-blueprint-tab" class="tab-button active">Create from Blueprint</button>
+        <button id="from-scratch-tab" class="tab-button">Create from Scratch</button>
+    </div>
+    
+    <div id="from-blueprint-content" class="tab-content active">
+        <h2>Create from Blueprint</h2>
+        <form method="POST" action="{% url 'npc_cards:create_character' %}">
+            {% csrf_token %}
+            
+            <div class="form-field">
+                <label for="blueprint-select">Select Blueprint:</label>
+                <select id="blueprint-select" name="blueprint">
+                    <option value="">-- Select a Blueprint --</option>
+                    {% for bp in blueprints %}
+                        <option value="{{ bp.id }}">
+                            {{ bp.name }} ({{ bp.get_race_display }}, CR {{ bp.challange_rating }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="name">Character Name:</label>
+                <input type="text" id="name" name="name">
+                <small>Leave blank to use blueprint name</small>
+            </div>
+            
+            <div class="form-field">
+                <label for="location">Location:</label>
+                {{ blueprint_form.location }}
+            </div>
+            
+            <button type="submit">Create Character</button>
+        </form>
+        
+        <div id="blueprint-preview" style="display: none; margin-top: 20px;">
+            <h3>Blueprint Preview</h3>
+            <div id="preview-content"></div>
+        </div>
+    </div>
+    
+    <div id="from-scratch-content" class="tab-content">
+        <h2>Create from Scratch</h2>
+        <form method="POST" action="{% url 'npc_cards:create_character' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-field">
+                    <label>{{ field.label }}:</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small>{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit">Create Character</button>
+        </form>
+    </div>
+    
+    <script>
+        // Tab switching
+        document.getElementById('from-blueprint-tab').addEventListener('click', function() {
+            document.getElementById('from-blueprint-content').classList.add('active');
+            document.getElementById('from-scratch-content').classList.remove('active');
+            this.classList.add('active');
+            document.getElementById('from-scratch-tab').classList.remove('active');
+        });
+        
+        document.getElementById('from-scratch-tab').addEventListener('click', function() {
+            document.getElementById('from-scratch-content').classList.add('active');
+            document.getElementById('from-blueprint-content').classList.remove('active');
+            this.classList.add('active');
+            document.getElementById('from-blueprint-tab').classList.remove('active');
+        });
+        
+        // Blueprint preview functionality would go here
+        // This would require an AJAX call to get blueprint details
+    </script>
+</body>
+</html>

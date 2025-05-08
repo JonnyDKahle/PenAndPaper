@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ character.name }}</title>
+</head>
+<body>
+    <h1>{{ character.name }}</h1>
+    
+    {% if character.is_blueprint %}
+        <div class="blueprint-badge">Blueprint</div>
+    {% endif %}
+    
+    {% if character.blueprint %}
+        <p>Based on blueprint: 
+            <a href="{% url 'npc_cards:blueprint_detail' character.blueprint.id %}">
+                {{ character.blueprint.name }}
+            </a>
+        </p>
+    {% endif %}
+    
+    {% if character.image_url %}
+        <img src="{{ character.image_url.url }}" alt="{{ character.name }}" 
+             style="max-width: 300px; max-height: 300px;">
+    {% endif %}
+    
+    <dl>
+        <dt>Race:</dt>
+        <dd>{{ character.get_race_display }}</dd>
+        
+        <dt>Alignment:</dt>
+        <dd>{{ character.get_alignment_display|default:"Not specified" }}</dd>
+        
+        {% if not character.is_blueprint %}
+            <dt>Location:</dt>
+            <dd>
+                {% if character.location %}
+                    <a href="{% url 'npc_cards:location' character.location.id %}">
+                        {{ character.location.name }}
+                    </a>
+                {% else %}
+                    Not assigned to a location
+                {% endif %}
+            </dd>
+        {% endif %}
+        
+        <dt>Stats:</dt>
+        <dd>
+            <table>
+                <tr>
+                    <th>STR</th>
+                    <th>DEX</th>
+                    <th>CON</th>
+                    <th>INT</th>
+                    <th>WIS</th>
+                    <th>CHA</th>
+                </tr>
+                <tr>
+                    <td>{{ character.strength }}</td>
+                    <td>{{ character.dexterity }}</td>
+                    <td>{{ character.constitution }}</td>
+                    <td>{{ character.intelligence }}</td>
+                    <td>{{ character.wisdom }}</td>
+                    <td>{{ character.charisma }}</td>
+                </tr>
+            </table>
+        </dd>
+        
+        <dt>Armor Class:</dt>
+        <dd>{{ character.armor_class }}</dd>
+        
+        <dt>Health Points:</dt>
+        <dd>{{ character.health_points }}</dd>
+        
+        <dt>Speed:</dt>
+        <dd>{{ character.speed }}</dd>
+        
+        <dt>Challenge Rating:</dt>
+        <dd>{{ character.challange_rating }} ({{ character.xp_gain }} XP)</dd>
+        
+        <dt>Skills:</dt>
+        <dd>
+            <ul>
+                {% for skill in character.skills.all %}
+                    <li>{{ skill.name }} - {{ skill.description }}</li>
+                {% empty %}
+                    <li>No skills</li>
+                {% endfor %}
+            </ul>
+        </dd>
+        
+        <dt>Damage Resistances:</dt>
+        <dd>
+            <ul>
+                {% for resistance in character.damage_resistances.all %}
+                    <li>{{ resistance.name }} ({{ resistance.fraction|floatformat:2 }})</li>
+                {% empty %}
+                    <li>No damage resistances</li>
+                {% endfor %}
+            </ul>
+        </dd>
+        
+        <dt>Senses:</dt>
+        <dd>
+            <ul>
+                {% for sense in character.senses.all %}
+                    <li>{{ sense.name }} - {{ sense.description }}</li>
+                {% empty %}
+                    <li>No special senses</li>
+                {% endfor %}
+            </ul>
+        </dd>
+    </dl>
+    
+    {% if character.is_blueprint %}
+        <a href="{% url 'npc_cards:create_character' %}?blueprint={{ character.id }}">
+            Create Character from this Blueprint
+        </a>
+    {% endif %}
+    
+    <div class="navigation">
+        {% if character.is_blueprint %}
+            <a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a>
+        {% else %}
+            <a href="{% url 'npc_cards:character_list' %}">Back to Characters</a>
+        {% endif %}
+    </div>
+</body>
+</html>

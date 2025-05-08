@@ -37,7 +37,7 @@ def character_list(request):
     context = {'characters':characters}
     return render(request, 'npc_cards/character_list.html', context=context)
 
-def character_detail(request):
+def character_detail(request, id):
     """Show details for a character"""
     character = get_object_or_404(NPCCharacter, id=id)
     context = {'character':character}
@@ -55,7 +55,7 @@ def create_blueprint(request):
             # Save M2M fields
             form.save_m2m()
 
-            return redirect('npc_cards/blueprint_detail', id=blueprint.id)
+            return redirect('npc_cards:blueprint_detail', id=blueprint.id)
     else:
         form = NPCCharacterForm()
 
@@ -63,6 +63,10 @@ def create_blueprint(request):
 
 def create_character(request):
     """Create a new character, optionally based on a blueprint"""
+    form = NPCCharacterForm()
+    blueprints = NPCCharacter.objects.filter(is_blueprint=True)
+    blueprint_form = NPCCharacterFormBlueprintForm()
+
     if request.method == 'POST':
         # Check if a blueprint was selected
         blueprint_id = request.POST.get('blueprint')
@@ -82,24 +86,24 @@ def create_character(request):
                     location=location
                 )
                 return redirect('npc_cards:character_detail', id=character.id)
-            else:
-                # Creating from scratch
-                form = NPCCharacter(request.POST, request.FILES)
-                if form.is_valid():
-                    character = form.save(commit=False)
-                    character.is_blueprint = False
-                    character.save()
-                    form.save_m2m()
-                    return redirect('npc_cards:character_detail.html', id=character.id)
         else:
-            # Initial form load - show both options
-            form = NPCCharacterForm()
-            blueprints = NPCCharacter.objects.filter(is_blueprint=True)
-            blueprint_form = NPCCharacterFormBlueprintForm()
+            # Creating from scratch
+            form = NPCCharacterForm(request.POST, request.FILES)
+            if form.is_valid():
+                character = form.save(commit=False)
+                character.is_blueprint = False
+                character.save()
+                form.save_m2m()
+                return redirect('npc_cards:character_detail', id=character.id)
+    else:
+        # Initial form load - show both options
+        form = NPCCharacterForm()
+        blueprints = NPCCharacter.objects.filter(is_blueprint=True)
+        blueprint_form = NPCCharacterFormBlueprintForm()
 
-        context = {
-            'form':form,
-            'blueprints':blueprints,
-            'blueprint_form':blueprint_form,
-        }
-        return render(request, 'npc_cards/character_form.html', context=context)
+    context = {
+        'form':form,
+        'blueprints':blueprints,
+        'blueprint_form':blueprint_form,
+    }
+    return render(request, 'npc_cards/character_form.html', context=context)
