@@ -14,7 +14,7 @@
             {% for location in universe.locations.all %}
                 {% if not location.parent_location %}
                 <li>
-                    {{ location.name }}
+                    <a href="{% url 'npc_cards:location' location.id %}">{{ location.name }}</a>
                     {% include "npc_cards/location_tree.html" with location=location %}
                 </li>
                 {% endif %}

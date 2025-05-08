@@ -2,7 +2,7 @@
     <ul>
         {% for sublocation in location.sub_locations.all %}
             <li>
-                {{sublocation.name}}
+                <a href="{% url 'npc_cards:location' sublocation.id %}">{{sublocation.name}}</a>
                 {% include "npc_cards/location_tree.html" with location=sublocation %}
             </li>
         {% endfor %}

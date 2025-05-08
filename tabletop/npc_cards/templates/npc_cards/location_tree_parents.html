@@ -1,0 +1,7 @@
+{% if location.parent_location %}
+    {% with parent=location.parent_location %}
+        {% include "npc_cards/location_tree_parents.html" with location=parent %}
+        &gt; 
+    {% endwith %}
+{% endif %}
+<a href="{% url 'npc_cards:location' location.id %}">{{ location.name }}</a>

@@ -40,16 +40,18 @@
             </ul>
         </dd>
         
+
         {% if location.parent_location %}
-        <dt>Parent Location</dt>
-        <dd>
-            <ul>
-                <li>
-                    <a href="{% url 'npc_cards:location' location.parent_location.id %}">{{ location.parent_location.name }}</a>
-                </li>
-            </ul>
-        </dd>
+            <dt>Parent Location Path</dt>
+            <dd>
+                <div>
+                    {% with parent=location.parent_location %}
+                        {% include "npc_cards/location_tree_parents.html" with location=parent %}
+                    {% endwith %}
+                </div>
+            </dd>
         {% endif %}
+
 
         <dt>Sub-locations:</dt>
         <dd>
