@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ character.name }}</title>
-</head>
-<body>
-    <h1>{{ character.name }}</h1>
+{% extends 'base.html' %}
+
+{% block title %}{{ character.name }} Detail{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ character.name }} Detail</h1>
     
     {% if character.is_blueprint %}
         <div class="blueprint-badge">Blueprint</div>
@@ -129,5 +129,4 @@
         <p><a href="{% url 'npc_cards:character_list' %}">Back to Characters</a></p>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

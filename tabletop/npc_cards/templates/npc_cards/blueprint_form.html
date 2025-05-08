@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Character Blueprint</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Create Character Blueprint{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
     <h1>Create Character Blueprint</h1>
     
     <form method="POST" enctype="multipart/form-data">
@@ -25,5 +25,4 @@
     </form>
     
     <a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a>
-</body>
-</html>
+{% endblock %}

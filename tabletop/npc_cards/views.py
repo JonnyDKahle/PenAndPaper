@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import NPCCharacter, Universe, Location
-from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm
+from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm, NPCCharacterBlueprintEditForm
+from .forms import NPCCharacterBlueprintForm
 
 # Create your views here.
 
@@ -46,7 +47,7 @@ def character_detail(request, id):
 def create_blueprint(request):
     """Create a new character blueprint"""
     if request.method == 'POST':
-        form = NPCCharacterForm(request.POST, request.FILES)
+        form = NPCCharacterBlueprintForm(request.POST, request.FILES)
         if form.is_valid():
             blueprint = form.save(commit=False)
             blueprint.is_blueprint = True
@@ -57,7 +58,7 @@ def create_blueprint(request):
 
             return redirect('npc_cards:blueprint_detail', id=blueprint.id)
     else:
-        form = NPCCharacterForm()
+        form = NPCCharacterBlueprintForm()
 
     return render(request, 'npc_cards/blueprint_form.html', {'form':form})
 
@@ -130,16 +131,19 @@ def edit_blueprint(request, id):
     blueprint = get_object_or_404(NPCCharacter, id=id)
 
     if request.method == 'POST':
-        form = NPCCharacterFormBlueprintForm(request.POST, request.FILES, instance=blueprint)
+        form = NPCCharacterBlueprintEditForm(request.POST, request.FILES, instance=blueprint)
         if form.is_valid():
-            form.save()
+            blueprint = form.save(commit=False)
+            blueprint.is_blueprint = True
+            blueprint.save()
+            form.save_m2m()
             return redirect('npc_cards:blueprint_detail', id=blueprint.id)
     else:
-        form = NPCCharacterFormBlueprintForm(instance=blueprint)
+        form = NPCCharacterBlueprintEditForm(instance=blueprint)
     
     context = {
         'form':form,
         'blueprint':blueprint,
         'has_instances': NPCCharacter.objects.filter(blueprint=blueprint).exists(),
     }
-    return render(request, 'npc_cards/blueprint_edit.html', context=context)
+    return render(request, 'npc_cards/blueprints_edit.html', context=context)

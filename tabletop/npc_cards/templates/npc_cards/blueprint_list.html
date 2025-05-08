@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character Blueprints</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Character Blueprints{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
     <h1>Character Blueprints</h1>
 
     <a href="{% url 'npc_cards:create_blueprint' %}">Create New Blueprint</a>
@@ -17,6 +17,4 @@
         <li>Not yet any blueprints.</li>
         {% endfor %}
     </ul>
-    
-</body>
-</html>
+{% endblock %}

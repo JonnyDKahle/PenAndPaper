@@ -16,6 +16,16 @@ class NPCCharacterForm(forms.ModelForm):
             'alignment':forms.Select(),
             }
         
+class NPCCharacterBlueprintForm(forms.ModelForm):
+    """Form for creating/editing a character"""
+    class Meta:
+        model = NPCCharacter
+        exclude = ['is_blueprint', 'blueprint', 'location']
+        widgets = {
+            'race':forms.Select(),
+            'alignment':forms.Select(),
+            }
+        
 class NPCCharacterFormBlueprintForm(forms.Form):
     """Form for creating a character from a blueprint"""
     blueprint = forms.ModelChoiceField(
@@ -27,3 +37,16 @@ class NPCCharacterFormBlueprintForm(forms.Form):
         queryset = Location.objects.all(),
         required=False
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields['location']
+
+class NPCCharacterBlueprintEditForm(forms.ModelForm):
+    """Form for editing a NPC blueprint"""
+    class Meta:
+        model = NPCCharacter
+        exclude = ['is_blueprint', 'blueprint', 'location']
+        widgets = {
+            'race':forms.Select(),
+            'alignment':forms.Select(),
+        }

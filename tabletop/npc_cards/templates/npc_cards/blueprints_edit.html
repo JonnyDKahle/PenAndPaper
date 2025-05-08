@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Blueprint: {{ blueprint.name }}</title>
-    <style>
-        .form-field {
-            margin-bottom: 15px;
+{% extends 'base.html' %}
+
+{% block title %}Edit Blueprint: {{ blueprint.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-field {
+        margin-bottom: 15px;
         }
         .form-field label {
             display: block;
@@ -35,9 +34,10 @@
             text-decoration: none;
             display: inline-block;
         }
-    </style>
-</head>
-<body>
+        </style>
+{% endblock %}
+
+{% block content %}
     <h1>Edit Blueprint: {{ blueprint.name }}</h1>
     
     <form method="POST" enctype="multipart/form-data">
@@ -75,5 +75,4 @@
             <a href="{% url 'npc_cards:blueprint_detail' blueprint.id %}">Cancel</a>
         </div>
     </form>
-</body>
-</html>
+{% endblock %}
