@@ -3,130 +3,399 @@
 {% block title %}{{ character.name }} Detail{% endblock %}
 
 {% block extra_css %}
+<style>
+    body {
+        background-color: #e8dcb5;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23d3c7a1' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        color: #3c2f2f;
+        font-family: 'Bookman Old Style', Georgia, serif;
+    }
+
+    .character-header {
+        background-color: #d9c9a3;
+        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c3b18e' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/svg%3E");
+        color: #5e1914;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+        border: 1px solid #b5a789;
+        box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .character-header h1 {
+        font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+        margin: 0;
+        font-size: 2.2rem;
+        letter-spacing: 0.5px;
+        color: #5e1914;
+    }
+    
+    .character-header::before,
+    .character-header::after {
+        content: "✦";
+        font-size: 1.5rem;
+        color: #7b241c;
+        margin: 0 10px;
+        vertical-align: middle;
+    }
+
+    .blueprint-badge {
+        background-color: #7b241c;
+        color: #fffcf6;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        display: inline-block;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .section {
+        background-color: #f5f0e1;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23eae0c6' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e0d6b8;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .section h2 {
+        border-bottom: 2px solid #7b241c;
+        padding-bottom: 10px;
+        color: #5e1914;
+        margin-top: 0;
+        font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+        position: relative;
+    }
+
+    .section h2::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(to right, #7b241c, transparent);
+    }
+
+    .character-image {
+        float: right;
+        margin: 0 0 15px 15px;
+        border: 3px solid #e0d6b8;
+        border-radius: 3px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        max-width: 250px;
+        max-height: 250px;
+    }
+
+    .character-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: #fffcf6;
+        border: 1px solid #e0d6b8;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 15px;
+        color: #3c2f2f;
+        background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e0d6b8' fill-opacity='0.2' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5V0zm1 5v1H5L6 5z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .card h3 {
+        margin-top: 0;
+        color: #5e1914;
+        border-bottom: 1px solid #e0d6b8;
+        padding-bottom: 8px;
+        font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    }
+
+    dl {
+        display: grid;
+        grid-template-columns: max-content auto;
+        gap: 10px;
+    }
+
+    dt {
+        font-weight: bold;
+        color: #5e1914;
+    }
+
+    dd {
+        margin-left: 0;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        text-align: center;
+    }
+
+    .stats-table th {
+        background-color: #e0d6b8;
+        color: #5e1914;
+        padding: 8px;
+        font-weight: bold;
+    }
+
+    .stats-table td {
+        background-color: #fffcf6;
+        padding: 8px;
+        border: 1px solid #e0d6b8;
+    }
+
+    .navigation {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid #e0d6b8;
+        padding-top: 15px;
+    }
+
+    .navigation a {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #f5f0e1;
+        border: 1px solid #e0d6b8;
+        border-radius: 4px;
+        color: #7b241c;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .navigation a:hover {
+        background-color: #e0d6b8;
+        color: #5e1914;
+        border-color: #5e1914;
+    }
+
+    a {
+        color: #7b241c;
+        transition: color 0.2s ease;
+    }
+
+    a:hover {
+        color: #5e1914;
+    }
+    
+    /* Decorative elements */
+    .corner-decoration {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #7b241c;
+        border-radius: 0;
+    }
+    
+    .top-left {
+        top: 5px;
+        left: 5px;
+        border-right: none;
+        border-bottom: none;
+    }
+    
+    .top-right {
+        top: 5px;
+        right: 5px;
+        border-left: none;
+        border-bottom: none;
+    }
+    
+    .bottom-left {
+        bottom: 5px;
+        left: 5px;
+        border-right: none;
+        border-top: none;
+    }
+    
+    .bottom-right {
+        bottom: 5px;
+        right: 5px;
+        border-left: none;
+        border-top: none;
+    }
+
+    .create-instance {
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .create-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #7b241c;
+        color: #fffcf6;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .create-button:hover {
+        background-color: #5e1914;
+        color: #fffcf6;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <h1>{{ character.name }} Detail</h1>
-    
-    {% if character.is_blueprint %}
-        <div class="blueprint-badge">Blueprint</div>
-    {% endif %}
-    
-    {% if character.blueprint %}
-        <p>Based on blueprint: 
-            <a href="{% url 'npc_cards:blueprint_detail' character.blueprint.id %}">
-                {{ character.blueprint.name }}
-            </a>
-        </p>
-    {% endif %}
-    
-    {% if character.image_url %}
-        <img src="{{ character.image_url.url }}" alt="{{ character.name }}" 
-             style="max-width: 300px; max-height: 300px;">
-    {% endif %}
-    
-    <dl>
-        <dt>Race:</dt>
-        <dd>{{ character.get_race_display }}</dd>
+    <div class="character-header">
+        <div class="corner-decoration top-left"></div>
+        <div class="corner-decoration top-right"></div>
+        <div class="corner-decoration bottom-left"></div>
+        <div class="corner-decoration bottom-right"></div>
         
-        <dt>Alignment:</dt>
-        <dd>{{ character.get_alignment_display|default:"Not specified" }}</dd>
+        <h1>{{ character.name }}</h1>
         
-        {% if not character.is_blueprint %}
-            <dt>Location:</dt>
-            <dd>
-                {% if character.location %}
-                    <a href="{% url 'npc_cards:location' character.location.id %}">
-                        {{ character.location.name }}
-                    </a>
-                {% else %}
-                    Not assigned to a location
-                {% endif %}
-            </dd>
+        {% if character.is_blueprint %}
+            <div class="blueprint-badge">Blueprint</div>
         {% endif %}
+    </div>
+    
+    <div class="section">
+        <div class="character-overview">
+            {% if character.image_url %}
+                <img src="{{ character.image_url.url }}" alt="{{ character.name }}" class="character-image">
+            {% endif %}
+            
+            {% if character.blueprint %}
+                <p>Based on blueprint: 
+                    <a href="{% url 'npc_cards:blueprint_detail' character.blueprint.id %}">
+                        {{ character.blueprint.name }}
+                    </a>
+                </p>
+            {% endif %}
+            
+            <div class="card">
+                <h3>Basic Information</h3>
+                <dl>
+                    <dt>Race:</dt>
+                    <dd>{{ character.get_race_display }}</dd>
+                    
+                    <dt>Alignment:</dt>
+                    <dd>{{ character.get_alignment_display|default:"Not specified" }}</dd>
+                    
+                    {% if not character.is_blueprint %}
+                        <dt>Location:</dt>
+                        <dd>
+                            {% if character.location %}
+                                <a href="{% url 'npc_cards:location' character.location.id %}">
+                                    {{ character.location.name }}
+                                </a>
+                            {% else %}
+                                Not assigned to a location
+                            {% endif %}
+                        </dd>
+                    {% endif %}
+                    
+                    <dt>Challenge Rating:</dt>
+                    <dd>{{ character.challange_rating }} ({{ character.xp_gain }} XP)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Attributes & Abilities</h2>
+        <div class="character-info">
+            <div class="card">
+                <h3>Stats</h3>
+                <table class="stats-table">
+                    <tr>
+                        <th>STR</th>
+                        <th>DEX</th>
+                        <th>CON</th>
+                        <th>INT</th>
+                        <th>WIS</th>
+                        <th>CHA</th>
+                    </tr>
+                    <tr>
+                        <td>{{ character.strength }}</td>
+                        <td>{{ character.dexterity }}</td>
+                        <td>{{ character.constitution }}</td>
+                        <td>{{ character.intelligence }}</td>
+                        <td>{{ character.wisdom }}</td>
+                        <td>{{ character.charisma }}</td>
+                    </tr>
+                </table>
+                
+                <dl>
+                    <dt>Armor Class:</dt>
+                    <dd>{{ character.armor_class }}</dd>
+                    
+                    <dt>Health Points:</dt>
+                    <dd>{{ character.health_points }}</dd>
+                    
+                    <dt>Speed:</dt>
+                    <dd>{{ character.speed }}</dd>
+                </dl>
+            </div>
+            
+            <div class="card">
+                <h3>Skills</h3>
+                <ul>
+                    {% for skill in character.skills.all %}
+                        <li><strong>{{ skill.name }}</strong> - {{ skill.description }}</li>
+                    {% empty %}
+                        <li>No skills</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         
-        <dt>Stats:</dt>
-        <dd>
-            <table>
-                <tr>
-                    <th>STR</th>
-                    <th>DEX</th>
-                    <th>CON</th>
-                    <th>INT</th>
-                    <th>WIS</th>
-                    <th>CHA</th>
-                </tr>
-                <tr>
-                    <td>{{ character.strength }}</td>
-                    <td>{{ character.dexterity }}</td>
-                    <td>{{ character.constitution }}</td>
-                    <td>{{ character.intelligence }}</td>
-                    <td>{{ character.wisdom }}</td>
-                    <td>{{ character.charisma }}</td>
-                </tr>
-            </table>
-        </dd>
-        
-        <dt>Armor Class:</dt>
-        <dd>{{ character.armor_class }}</dd>
-        
-        <dt>Health Points:</dt>
-        <dd>{{ character.health_points }}</dd>
-        
-        <dt>Speed:</dt>
-        <dd>{{ character.speed }}</dd>
-        
-        <dt>Challenge Rating:</dt>
-        <dd>{{ character.challange_rating }} ({{ character.xp_gain }} XP)</dd>
-        
-        <dt>Skills:</dt>
-        <dd>
-            <ul>
-                {% for skill in character.skills.all %}
-                    <li>{{ skill.name }} - {{ skill.description }}</li>
-                {% empty %}
-                    <li>No skills</li>
-                {% endfor %}
-            </ul>
-        </dd>
-        
-        <dt>Damage Resistances:</dt>
-        <dd>
-            <ul>
-                {% for resistance in character.damage_resistances.all %}
-                    <li>{{ resistance.name }} ({{ resistance.fraction|floatformat:2 }})</li>
-                {% empty %}
-                    <li>No damage resistances</li>
-                {% endfor %}
-            </ul>
-        </dd>
-        
-        <dt>Senses:</dt>
-        <dd>
-            <ul>
-                {% for sense in character.senses.all %}
-                    <li>{{ sense.name }} - {{ sense.description }}</li>
-                {% empty %}
-                    <li>No special senses</li>
-                {% endfor %}
-            </ul>
-        </dd>
-    </dl>
+        <div class="character-info" style="margin-top: 15px;">
+            <div class="card">
+                <h3>Damage Resistances</h3>
+                <ul>
+                    {% for resistance in character.damage_resistances.all %}
+                        <li><strong>{{ resistance.name }}</strong> ({{ resistance.fraction|floatformat:2 }})</li>
+                    {% empty %}
+                        <li>No damage resistances</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>Senses</h3>
+                <ul>
+                    {% for sense in character.senses.all %}
+                        <li><strong>{{ sense.name }}</strong> - {{ sense.description }}</li>
+                    {% empty %}
+                        <li>No special senses</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
     
     {% if character.is_blueprint %}
-        <a href="{% url 'npc_cards:create_character' %}?blueprint={{ character.id }}">
-            Create Character from this Blueprint
-        </a>
+        <div class="create-instance">
+            <a href="{% url 'npc_cards:create_character' %}?blueprint={{ character.id }}" class="create-button">
+                Create Character from this Blueprint
+            </a>
+        </div>
     {% endif %}
-    
     
     <div class="navigation">
         {% if character.is_blueprint %}
-        <p><a href="{% url 'npc_cards:edit_blueprint' character.id %}">Edit Blueprint</a></p>
-        <p><a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a></p>
+            <a href="{% url 'npc_cards:edit_blueprint' character.id %}">Edit Blueprint</a>
+            <a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a>
         {% else %}
-        <p><a href="{% url 'npc_cards:edit_character' character.id %}">Edit Character</a></p>
-        <p><a href="{% url 'npc_cards:character_list' %}">Back to Characters</a></p>
+            <a href="{% url 'npc_cards:edit_character' character.id %}">Edit Character</a>
+            <a href="{% url 'npc_cards:character_list' %}">Back to Characters</a>
         {% endif %}
     </div>
 {% endblock %}

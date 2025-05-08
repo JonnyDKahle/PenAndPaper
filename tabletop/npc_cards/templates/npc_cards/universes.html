@@ -1,27 +1,93 @@
 {% extends 'base.html' %}
 
-{% block title %}Create NPC Instance{% endblock %}
+{% block title %}Campaign Universes{% endblock %}
 
 {% block extra_css %}
+<style>
+    .universe-card {
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 15px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .universe-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .universe-header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px 5px 0 0;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin: -15px -15px 15px -15px;
+    }
+    
+    .location-tree {
+        padding-left: 20px;
+    }
+    
+    .location-item {
+        margin: 8px 0;
+    }
+    
+    .location-link {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .location-link:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+    
+    .header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <h1>Universes</h1>
-    <ul>
-        {% for universe in all_universes %}
-        <li><strong>{{ universe.name }}</strong></li>
-        <ul>
-            {% for location in universe.locations.all %}
-                {% if not location.parent_location %}
-                <li>
-                    <a href="{% url 'npc_cards:location' location.id %}">{{ location.name }}</a>
-                    {% include "npc_cards/location_tree.html" with location=location %}
-                </li>
-                {% endif %}
+    <div class="header">
+        <h1>Campaign Universes</h1>
+        <p>Explore your campaign worlds and their locations</p>
+    </div>
+
+    <div class="section">
+        <div class="universe-grid">
+            {% for universe in all_universes %}
+                <div class="universe-card">
+                    <div class="universe-header">{{ universe.name }}</div>
+                    
+                    <div class="location-tree">
+                        {% for location in universe.locations.all %}
+                            {% if not location.parent_location %}
+                                <div class="location-item">
+                                    <a href="{% url 'npc_cards:location' location.id %}" class="location-link">{{ location.name }}</a>
+                                    {% include "npc_cards/location_tree.html" with location=location %}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <p>No locations in this universe</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="universe-card">
+                    <p>No universes available. Create one to get started!</p>
+                </div>
             {% endfor %}
-        </ul>
-        {% empty %}
-        <li>No universes availiable</li>
-        {% endfor %}
-    </ul>
+        </div>
+    </div>
 {% endblock %}
