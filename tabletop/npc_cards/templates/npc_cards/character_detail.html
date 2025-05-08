@@ -119,13 +119,14 @@
         </a>
     {% endif %}
     
-    <a href="{% url 'npc_cards:edit_character' character.id %}">Edit Character</a>
-
+    
     <div class="navigation">
         {% if character.is_blueprint %}
-            <a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a>
+        <p><a href="{% url 'npc_cards:edit_blueprint' character.id %}">Edit Blueprint</a></p>
+        <p><a href="{% url 'npc_cards:blueprint_list' %}">Back to Blueprints</a></p>
         {% else %}
-            <a href="{% url 'npc_cards:character_list' %}">Back to Characters</a>
+        <p><a href="{% url 'npc_cards:edit_character' character.id %}">Edit Character</a></p>
+        <p><a href="{% url 'npc_cards:character_list' %}">Back to Characters</a></p>
         {% endif %}
     </div>
 </body>

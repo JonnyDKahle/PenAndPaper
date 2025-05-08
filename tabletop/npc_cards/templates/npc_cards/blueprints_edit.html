@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blueprint: {{ blueprint.name }}</title>
+    <style>
+        .form-field {
+            margin-bottom: 15px;
+        }
+        .form-field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-field input, .form-field select, .form-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .propagate-option {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button, .buttons a {
+            padding: 10px 15px;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Blueprint: {{ blueprint.name }}</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-field">
+                <label>{{ field.label }}:</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="error">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        {% if has_instances %}
+        <div class="propagate-option">
+            <h3>Propagate Changes</h3>
+            <p>This blueprint has character instances associated with it. Would you like to propagate these changes to all instances?</p>
+            <label>
+                <input type="checkbox" name="propagate_changes" value="1">
+                Update all characters based on this blueprint
+            </label>
+            <p><small>Note: This will override any custom changes made to individual character instances.</small></p>
+        </div>
+        {% endif %}
+        
+        <div class="buttons">
+            <button type="submit">Save Changes</button>
+            <a href="{% url 'npc_cards:blueprint_detail' blueprint.id %}">Cancel</a>
+        </div>
+    </form>
+</body>
+</html>
