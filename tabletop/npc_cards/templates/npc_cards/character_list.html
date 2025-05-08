@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPC Characters</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}NPC Characters{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
     <h1>NPC Characters</h1>
 
     <a href="{% url 'npc_cards:create_character' %}">Create New Character</a>
@@ -22,6 +22,4 @@
         <li>No characters availiable.</li>
     {% endfor %}
     </ul>
-        
-</body>
-</html>
+{% endblock %}

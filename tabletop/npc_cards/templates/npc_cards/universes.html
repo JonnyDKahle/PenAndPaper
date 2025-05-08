@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPC Character Cards</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Create NPC Instance{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
     <h1>Universes</h1>
     <ul>
         {% for universe in all_universes %}
@@ -24,5 +24,4 @@
         <li>No universes availiable</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

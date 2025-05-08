@@ -1,19 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Character</title>
-    <style>
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
+{% extends 'base.html' %}
+
+{% block title %}Create New NPC Character{% endblock %}
+
+{% block extra_css %}
+<style>
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <h1>Create New NPC Character</h1>
     
     <div class="tabs">
@@ -76,7 +76,9 @@
             <button type="submit">Create Character</button>
         </form>
     </div>
+{% endblock %}
     
+{% block extra_js %}    
     <script>
         // Tab switching
         document.getElementById('from-blueprint-tab').addEventListener('click', function() {
@@ -96,5 +98,4 @@
         // Blueprint preview functionality would go here
         // This would require an AJAX call to get blueprint details
     </script>
-</body>
-</html>
+{% endblock %}

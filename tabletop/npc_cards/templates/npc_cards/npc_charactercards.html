@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPC Character Cards</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}{{location.name}}{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
     <h1>NPC Character Cards</h1>
     <ul>
         {% for npc_card in npc_cards %}
@@ -48,5 +48,4 @@
             <p>No NPC Character Cards available.</p>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
