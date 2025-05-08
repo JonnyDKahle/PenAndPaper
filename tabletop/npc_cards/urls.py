@@ -3,7 +3,7 @@ from . import views
 
 app_name = 'npc_cards'
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name='index'),
     # path('npc_cards/', NPCCharacterCardsView),
     path('universes/', views.UniverseView, name='universes'),
     path('location/<int:id>/', views.LocationDetailView, name='location'),

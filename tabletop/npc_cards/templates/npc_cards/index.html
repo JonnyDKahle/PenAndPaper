@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D NPC Management</title>
+{% extends 'base.html' %}
+
+{% block title %}D&D NPC Management Index{% endblock %}
+
+{% block extra_css %}
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -72,8 +71,9 @@
             background: #7f8c8d;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <div class="header">
         <h1>D&D NPC Management System</h1>
         <p>Create, manage and organize your NPCs, locations, and universes</p>
@@ -162,5 +162,4 @@
         <p>This application helps Dungeon Masters manage their campaign NPCs, locations, and universe details.</p>
         <p>Version: 1.0 | Last Updated: May 2024</p>
     </div>
-</body>
-</html>
+{% endblock %}
