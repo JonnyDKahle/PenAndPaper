@@ -1,1 +1,166 @@
-<h1>Welcome to the NPC_Cards index page!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D NPC Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .section {
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            color: #2c3e50;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .button {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background: #2980b9;
+        }
+        .button.secondary {
+            background: #95a5a6;
+        }
+        .button.secondary:hover {
+            background: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>D&D NPC Management System</h1>
+        <p>Create, manage and organize your NPCs, locations, and universes</p>
+    </div>
+
+    <div class="section">
+        <h2>Quick Navigation</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>Characters</h3>
+                <p>View and manage individual NPCs in your campaigns</p>
+                <a href="{% url 'npc_cards:character_list' %}" class="button">View All Characters</a>
+                <a href="{% url 'npc_cards:create_character' %}" class="button secondary">Create New</a>
+            </div>
+            
+            <div class="card">
+                <h3>Blueprints</h3>
+                <p>Create and manage character templates for quick NPC creation</p>
+                <a href="{% url 'npc_cards:blueprint_list' %}" class="button">View All Blueprints</a>
+                <a href="{% url 'npc_cards:create_blueprint' %}" class="button secondary">Create New</a>
+            </div>
+            
+            <div class="card">
+                <h3>Universes</h3>
+                <p>Explore your campaign worlds and their locations</p>
+                <a href="{% url 'npc_cards:universes' %}" class="button">View All Universes</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Character Management</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>NPC Instances</h3>
+                <p>Individual characters that exist in your world</p>
+                <ul>
+                    <li>Create unique NPCs or base them on blueprints</li>
+                    <li>Assign NPCs to specific locations</li>
+                    <li>Track stats, abilities and other details</li>
+                </ul>
+                <a href="{% url 'npc_cards:character_list' %}" class="button">Manage Characters</a>
+            </div>
+            
+            <div class="card">
+                <h3>Character Blueprints</h3>
+                <p>Templates for quickly creating common NPC types</p>
+                <ul>
+                    <li>Define standard NPC types once</li>
+                    <li>Create multiple instances with variations</li>
+                    <li>Streamline your worldbuilding</li>
+                </ul>
+                <a href="{% url 'npc_cards:blueprint_list' %}" class="button">Manage Blueprints</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>World Management</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>Universes</h3>
+                <p>Your campaign worlds and settings</p>
+                <ul>
+                    <li>Organize locations by universe</li>
+                    <li>Keep different campaigns separate</li>
+                </ul>
+                <a href="{% url 'npc_cards:universes' %}" class="button">View Universes</a>
+            </div>
+            
+            <div class="card">
+                <h3>Locations</h3>
+                <p>Places within your universes where NPCs can be found</p>
+                <ul>
+                    <li>View NPCs at specific locations</li>
+                    <li>Track items at each location</li>
+                    <li>Organize locations hierarchically</li>
+                </ul>
+                <p><i>Select a universe to view its locations</i></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Developer Information</h2>
+        <p>This application helps Dungeon Masters manage their campaign NPCs, locations, and universe details.</p>
+        <p>Version: 1.0 | Last Updated: May 2024</p>
+    </div>
+</body>
+</html>

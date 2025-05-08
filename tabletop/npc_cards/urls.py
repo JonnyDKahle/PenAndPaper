@@ -5,7 +5,7 @@ app_name = 'npc_cards'
 urlpatterns = [
     path('', views.index),
     # path('npc_cards/', NPCCharacterCardsView),
-    path('universes/', views.UniverseView),
+    path('universes/', views.UniverseView, name='universes'),
     path('location/<int:id>/', views.LocationDetailView, name='location'),
     # path('create_npcinstance/', CreateNPCInstaceView, name='create_npcinstance'),
 
