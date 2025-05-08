@@ -107,3 +107,23 @@ def create_character(request):
         'blueprint_form':blueprint_form,
     }
     return render(request, 'npc_cards/character_form.html', context=context)
+
+def edit_character(request, id):
+    """Edit a character"""
+    character = get_object_or_404(NPCCharacter, id=id)
+
+    if request.method == 'POST':
+        form = NPCCharacterForm(request.POST, request.FILES, instance=character)
+        if form.is_valid():
+            form.save()
+            return redirect('npc_cards:character_detail', id=character.id)
+        else:
+            print('Form not valid.')
+    else:
+        form = NPCCharacterForm(instance=character)
+
+    context = {
+        'form':form,
+        'character':character,
+    }
+    return render(request, 'npc_cards/character_edit.html', context=context)

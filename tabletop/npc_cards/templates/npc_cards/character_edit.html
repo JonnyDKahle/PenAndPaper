@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{ character.name }}</title>
+</head>
+<body>
+    <h1>Edit Character: {{ character.name }}</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-field">
+                <label>{{ field.label }}:</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit">Save Changes</button>
+    </form>
+    
+
+    <a href="{% url 'npc_cards:character_detail' character.id %}">Cancel/back to Detail</a>
+</body>
+</html>
