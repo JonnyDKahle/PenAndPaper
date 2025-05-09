@@ -37,9 +37,9 @@ class NPCCharacterFormBlueprintForm(forms.Form):
         queryset = Location.objects.all(),
         required=False
     )
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        del self.fields['location']
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     del self.fields['location']
 
 class NPCCharacterBlueprintEditForm(forms.ModelForm):
     """Form for editing a NPC blueprint"""

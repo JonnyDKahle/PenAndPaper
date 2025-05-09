@@ -225,6 +225,7 @@
             <div class="card">
                 <h3>Overview</h3>
                 <p>{{ location.story|default:"No story available" }}</p>
+                <p><strong>Secrets:</strong> {{ location.secret|default:"No secrets" }}</p>
                 <p><strong>Universe:</strong> {{ location.universe.name|default:"No universe assigned" }}</p>
                 <p><strong>Parent Location:</strong> 
                     {% if location.parent_location %}
