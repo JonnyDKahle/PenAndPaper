@@ -236,7 +236,7 @@
                     {% endif %}
                 </p>
             </div>
-            
+                        
             <div class="card">
                 <h3>Items</h3>
                 <ul class="info-list">
@@ -246,6 +246,15 @@
                         <li>No items in this location</li>
                     {% endfor %}
                 </ul>
+                
+                <details class="item-form-toggle">
+                    <summary>Add New Item</summary>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ item_form.as_p }}
+                        <button type="submit" name="submit_item">Add Item</button>
+                    </form>
+                </details>
             </div>
         </div>
     </div>
@@ -264,6 +273,15 @@
                         <li>No NPCs in this location</li>
                     {% endfor %}
                 </ul>
+                
+                <details class="character-form-toggle">
+                    <summary>Add New Character</summary>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ character_form.as_p }}
+                        <button type="submit" name="submit_character">Add Character</button>
+                    </form>
+                </details>
             </div>
             
             <div class="card">

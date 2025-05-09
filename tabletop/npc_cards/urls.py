@@ -19,4 +19,8 @@ urlpatterns = [
     path('characters/create/', views.create_character, name='create_character'),
     path('characters/<int:id>/', views.character_detail, name='character_detail'),
     path('characters/<int:id>/edit/', views.edit_character, name='edit_character'),
+
+    # Item URLs
+    # path('location/<int:location_id>/items/create', views.create_item, name='create_item'),
+    # path('items/create', views.create_item, name='create_item'),
 ]

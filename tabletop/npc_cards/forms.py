@@ -1,5 +1,5 @@
 from django import forms
-from .models import Location, NPCCharacter
+from .models import Location, NPCCharacter, Item
 
 class LocationForm(forms.ModelForm):
     class Meta:
@@ -50,3 +50,8 @@ class NPCCharacterBlueprintEditForm(forms.ModelForm):
             'race':forms.Select(),
             'alignment':forms.Select(),
         }
+
+class ItemCreateForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = '__all__'

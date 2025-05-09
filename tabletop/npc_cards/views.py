@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import NPCCharacter, Universe, Location
 from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm, NPCCharacterBlueprintEditForm
-from .forms import NPCCharacterBlueprintForm
+from .forms import NPCCharacterBlueprintForm, ItemCreateForm
 
 # Create your views here.
 
@@ -22,8 +22,33 @@ def UniverseView(request):
 
 def LocationDetailView(request, id):
     location = get_object_or_404(Location, id=id)
+    item_form = ItemCreateForm()
+    character_form = NPCCharacterForm(initial={'location':location})
 
-    context = {'location':location}
+    if request.method == 'POST':
+        if 'submit_item' in request.POST:
+            item_form = ItemCreateForm(request.POST)
+            if item_form.is_valid():
+                item = item_form.save()
+                location.items.add(item)
+                return redirect('npc_cards:location', id=location.id)
+            
+        elif 'submit_character' in request.POST:
+            # Process character form
+            character_form = NPCCharacterForm(request.POST, request.FILES)
+            if character_form.is_valid():
+                character = character_form.save(commit=False)
+                character.is_blueprint = False
+                character.location = location
+                character.save()
+                character_form.save_m2m()
+                return redirect('npc_cards:location', id=location.id)
+        
+    context = {
+        'location':location,
+        'item_form':item_form,
+        'character_form':character_form,
+        }
     return render(request, 'npc_cards/location_detail.html', context=context)
 
 def blueprint_list(request):
