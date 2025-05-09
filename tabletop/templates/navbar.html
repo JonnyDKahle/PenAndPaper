@@ -43,6 +43,19 @@
                     <li><a href="{% url 'npc_cards:universes' %}">All Universes</a></li>
                 </ul>
             </li>
+
+                        <li class="navbar-item dropdown">
+                <a class="navbar-link dropdown-toggle active">
+                    Account <i class="dropdown-icon">▼</i>
+                </a>
+                <ul class="dropdown-menu">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>
