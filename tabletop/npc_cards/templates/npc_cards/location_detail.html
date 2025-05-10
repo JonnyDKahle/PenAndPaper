@@ -198,6 +198,74 @@
         border-left: none;
         border-top: none;
     }
+    .location-path {
+    font-size: 0.85em;
+    margin-left: 8px;
+    color: #7b241c;
+    opacity: 0.85;
+}
+
+.location-path a {
+    text-decoration: none;
+    color: #7b241c;
+    border-bottom: 1px dotted #7b241c;
+}
+
+.location-path a:hover {
+    color: #5e1914;
+    border-bottom: 1px solid #5e1914;
+}
+/* NPC link tooltip styling */
+.npc-link {
+    position: relative;
+}
+
+.npc-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e8dcb5;
+    color: #5e1914;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: max-content;
+    max-width: 200px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 1px solid #d3c7a1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.npc-link:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Arrow at the bottom of tooltip */
+.npc-link::before {
+    content: "";
+    position: absolute;
+    bottom: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #e8dcb5;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.npc-link:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
 </style>
 {% endblock %}
 
@@ -264,15 +332,21 @@
         <h2>Characters & Sub-locations</h2>
         <div class="card-grid">
             <div class="card">
-                <h3>NPCs at this Location</h3>
+                <h3>NPCs at this Location & Sub-locations</h3>
                 <ul class="info-list">
+                    <!-- NPCs directly in this location -->
                     {% for npc in location.npcs.all %}
                         <li>
                             <a href="{% url 'npc_cards:character_detail' npc.id %}">{{ npc.name }}</a>
                         </li>
                     {% empty %}
-                        <li>No NPCs in this location</li>
+                        {% if not has_sublocation_npcs %}
+                            <li>No NPCs in this location or sub-locations</li>
+                        {% endif %}
                     {% endfor %}
+                    
+                    <!-- NPCs in sub-locations -->
+                    {% include "npc_cards/sublocation_npcs.html" with current_location=location %}
                 </ul>
                 
                 <details class="character-form-toggle">

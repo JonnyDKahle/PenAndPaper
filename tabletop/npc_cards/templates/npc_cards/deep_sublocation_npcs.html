@@ -1,0 +1,13 @@
+{% for npc in sublocation.npcs.all %}
+    <li>
+        <a href="{% url 'npc_cards:character_detail' npc.id %}" 
+           class="npc-link" 
+           data-tooltip="{{ parent_sublocation.name }} >...> {{ sublocation.name }}">
+            {{ npc.name }}
+        </a>
+    </li>
+{% endfor %}
+
+{% for deeper in sublocation.sub_locations.all %}
+    {% include "npc_cards/deep_sublocation_npcs.html" with sublocation=deeper parent_sublocation=parent_sublocation %}
+{% endfor %}
