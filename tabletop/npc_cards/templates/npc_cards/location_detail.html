@@ -359,7 +359,7 @@
                 <h3>Items</h3>
                 <ul class="info-list">
                     {% for item in location.items.all %}
-                        <li>{{ item.name }}</li>
+                        <li><a href="{% url 'npc_cards:item_detail' item.id %}">{{ item.name }}</a></li>
                     {% empty %}
                         <li>No items in this location</li>
                     {% endfor %}

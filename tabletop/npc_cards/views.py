@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import NPCCharacter, Universe, Location
+from .models import NPCCharacter, Universe, Location, Item
 from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm, NPCCharacterBlueprintEditForm
 from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm
 
@@ -202,3 +202,10 @@ def edit_blueprint(request, id):
         'has_instances': NPCCharacter.objects.filter(blueprint=blueprint).exists(),
     }
     return render(request, 'npc_cards/blueprints_edit.html', context=context)
+
+def item_detail(request, id):
+    item = get_object_or_404(Item, id=id)
+
+
+    context = {'item':item}
+    return render(request, 'npc_cards/item_detail.html', context=context)

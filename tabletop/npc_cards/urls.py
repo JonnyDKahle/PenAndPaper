@@ -23,4 +23,5 @@ urlpatterns = [
     # Item URLs
     # path('location/<int:location_id>/items/create', views.create_item, name='create_item'),
     # path('items/create', views.create_item, name='create_item'),
+    path('items/<int:id>/', views.item_detail, name='item_detail'),
 ]
