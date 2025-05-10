@@ -9,6 +9,7 @@ class NPCCharacter(models.Model):
     # Character Attributes:
     image_url = models.ImageField(upload_to='npc_cards/', blank=True)
     name = models.CharField(max_length=100)
+    notes = models.TextField(null=True, blank=True)
 
     RACE_CHOICES = [
         ('human', 'Human'),
