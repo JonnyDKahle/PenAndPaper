@@ -266,6 +266,47 @@
     opacity: 1;
     visibility: visible;
 }
+
+.creation-form-toggle {
+    margin-top: 15px;
+    border-top: 1px dashed #e0d6b8;
+    padding-top: 15px;
+}
+
+.creation-form-toggle summary {
+    cursor: pointer;
+    color: #7b241c;
+    font-weight: bold;
+    user-select: none;
+}
+
+.creation-form-toggle summary:hover {
+    color: #5e1914;
+}
+
+.creation-form-toggle form {
+    margin-top: 10px;
+    padding: 10px;
+    background: #fffef9;
+    border: 1px solid #e0d6b8;
+    border-radius: 4px;
+}
+
+.creation-form-toggle button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #7b241c;
+    color: #fffcf6;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s ease;
+}
+
+.creation-form-toggle button:hover {
+    background: #5e1914;
+}
 </style>
 {% endblock %}
 
@@ -302,6 +343,14 @@
                         </a>
                     {% else %}
                         Top-level location
+                        <details class="creation-form-toggle">
+                            <summary>Create Parent Location</summary>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ parent_form.as_p }}
+                                <button type="submit" name="submit_parent">Create Parent Location</button>
+                            </form>
+                        </details>
                     {% endif %}
                 </p>
             </div>
@@ -316,7 +365,7 @@
                     {% endfor %}
                 </ul>
                 
-                <details class="item-form-toggle">
+                <details class="creation-form-toggle">
                     <summary>Add New Item</summary>
                     <form method="POST">
                         {% csrf_token %}
@@ -341,7 +390,7 @@
                         </li>
                     {% empty %}
                         {% if not has_sublocation_npcs %}
-                            <li>No NPCs in this location or sub-locations</li>
+                            <li>No NPCs in this location</li>
                         {% endif %}
                     {% endfor %}
                     
@@ -349,7 +398,7 @@
                     {% include "npc_cards/sublocation_npcs.html" with current_location=location %}
                 </ul>
                 
-                <details class="character-form-toggle">
+                <details class="creation-form-toggle">
                     <summary>Add New Character</summary>
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -370,6 +419,15 @@
                         <li>No sub-locations</li>
                     {% endfor %}
                 </ul>
+                
+                <details class="creation-form-toggle">
+                    <summary>Add New Sub-location</summary>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ sublocation_form.as_p }}
+                        <button type="submit" name="submit_sublocation">Create Sub-location</button>
+                    </form>
+                </details>
             </div>
         </div>
     </div>

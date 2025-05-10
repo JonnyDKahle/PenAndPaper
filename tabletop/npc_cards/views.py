@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import NPCCharacter, Universe, Location
 from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm, NPCCharacterBlueprintEditForm
-from .forms import NPCCharacterBlueprintForm, ItemCreateForm
+from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm
 
 # Create your views here.
 
@@ -22,11 +22,16 @@ def UniverseView(request):
 
 def LocationDetailView(request, id):
     location = get_object_or_404(Location, id=id)
+    
+    # Initialize all forms
     item_form = ItemCreateForm()
-    character_form = NPCCharacterForm(initial={'location':location})
-
+    character_form = NPCCharacterForm(initial={'location': location})
+    sublocation_form = SimpleLocationForm()
+    parent_form = SimpleLocationForm()
+    
     if request.method == 'POST':
         if 'submit_item' in request.POST:
+            # Process item form (existing code)
             item_form = ItemCreateForm(request.POST)
             if item_form.is_valid():
                 item = item_form.save()
@@ -34,7 +39,7 @@ def LocationDetailView(request, id):
                 return redirect('npc_cards:location', id=location.id)
             
         elif 'submit_character' in request.POST:
-            # Process character form
+            # Process character form (existing code)
             character_form = NPCCharacterForm(request.POST, request.FILES)
             if character_form.is_valid():
                 character = character_form.save(commit=False)
@@ -43,12 +48,37 @@ def LocationDetailView(request, id):
                 character.save()
                 character_form.save_m2m()
                 return redirect('npc_cards:location', id=location.id)
-        
+                
+        elif 'submit_sublocation' in request.POST:
+            # Process sublocation form
+            sublocation_form = SimpleLocationForm(request.POST)
+            if sublocation_form.is_valid():
+                sublocation = sublocation_form.save(commit=False)
+                sublocation.universe = location.universe  # Inherit universe from parent
+                sublocation.parent_location = location
+                sublocation.save()
+                return redirect('npc_cards:location', id=sublocation.id)
+                
+        elif 'submit_parent' in request.POST:
+            # Process parent location form
+            parent_form = SimpleLocationForm(request.POST)
+            if parent_form.is_valid():
+                parent_location = parent_form.save(commit=False)
+                parent_location.universe = location.universe  # Share the same universe
+                parent_location.save()
+                
+                # Set the new location as parent of current
+                location.parent_location = parent_location
+                location.save()
+                return redirect('npc_cards:location', id=parent_location.id)
+    
     context = {
-        'location':location,
-        'item_form':item_form,
-        'character_form':character_form,
-        }
+        'location': location,
+        'item_form': item_form,
+        'character_form': character_form,
+        'sublocation_form': sublocation_form,
+        'parent_form': parent_form,
+    }
     return render(request, 'npc_cards/location_detail.html', context=context)
 
 def blueprint_list(request):

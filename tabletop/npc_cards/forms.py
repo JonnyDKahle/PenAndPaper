@@ -6,6 +6,15 @@ class LocationForm(forms.ModelForm):
         model = Location
         fields = '__all__'
 
+class SimpleLocationForm(forms.ModelForm):
+    """Simplified form for creating locations from location detail page"""
+    class Meta:
+        model = Location
+        fields = ['name', 'story']
+        widgets = {
+            'story': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Brief description of this location'}),
+        }
+
 class NPCCharacterForm(forms.ModelForm):
     """Form for creating/editing a character"""
     class Meta:
