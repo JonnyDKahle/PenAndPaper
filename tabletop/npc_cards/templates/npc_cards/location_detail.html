@@ -730,18 +730,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Position the form near the cursor but ensure it's visible on screen
         const rect = canvas.getBoundingClientRect();
-        const formLeft = Math.min(
-            rect.left + options.e.offsetX + 20, 
-            window.innerWidth - 320
-        );
-        const formTop = Math.min(
-            rect.top + options.e.offsetY - 100,
-            window.innerHeight - 300
-        );
-        
+
         form.style.position = 'absolute';
-        form.style.left = formLeft + 'px';
-        form.style.top = formTop + 'px';
+        form.style.left = 1 + 'px';
+        form.style.top = 1 + 'px';
         form.style.zIndex = '1000'; // Ensure it's on top
         
         // Set coordinates in the hidden form fields
