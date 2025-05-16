@@ -307,26 +307,197 @@
 .creation-form-toggle button:hover {
     background: #5e1914;
 }
+/* Map interface */
+.map-container {
+    position: relative;
+    margin: 20px 0;
+    border: 1px solid #e0d6b8;
+    background: #fffcf6;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+#location-map {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.map-controls {
+    padding: 10px;
+    background: #e8dcb5;
+    border-top: 1px solid #d3c7a1;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.map-btn {
+    background: #7b241c;
+    color: #fffcf6;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s;
+}
+
+.map-btn:hover, .map-btn.active {
+    background: #5e1914;
+}
+
+.map-instructions {
+    margin-left: auto;
+    font-style: italic;
+    color: #7b241c;
+    display: none;
+}
+
+.map-marker-form h3 {
+    margin-top: 0;
+    color: #5e1914;
+    border-bottom: 1px solid #e0d6b8;
+    padding-bottom: 8px;
+}
+
+.map-placeholder {
+    text-align: center;
+    padding: 40px;
+    background: #f5f0e1;
+    border: 2px dashed #d3c7a1;
+    border-radius: 5px;
+}
+
+.upload-map-form {
+    margin-top: 15px;
+}
+
+.hidden {
+    display: none;
+}
+.map-marker-form {
+    position: absolute;
+    background: #fffcf6;
+    border: 1px solid #e0d6b8;
+    border-radius: 5px;
+    padding: 15px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.map-marker-form input[type="text"],
+.map-marker-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #e0d6b8;
+    border-radius: 4px;
+    background-color: #fff;
+    font-family: inherit;
+}
+
+.map-marker-form button {
+    padding: 8px 12px;
+    margin-right: 5px;
+    background: #7b241c;
+    color: #fffcf6;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.map-marker-form button:hover {
+    background: #5e1914;
+}
+
+.map-marker-form button[type="button"] {
+    background: #999;
+}
+
+.map-marker-form button[type="button"]:hover {
+    background: #777;
+}
 </style>
 {% endblock %}
 
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+{% endblock %}
+
 {% block content %}
-    <div class="location-header">
-        <div class="corner-decoration top-left"></div>
-        <div class="corner-decoration top-right"></div>
-        <div class="corner-decoration bottom-left"></div>
-        <div class="corner-decoration bottom-right"></div>
-        
-        <h1>{{ location.name }}</h1>
-        {% if location.parent_location %}
-            <div class="breadcrumb-nav">
-                {% with parent=location.parent_location %}
-                    {% include "npc_cards/location_tree_parents.html" with location=parent %}
-                {% endwith %}
-                &gt; {{ location.name }}
-            </div>
-        {% endif %}
+<div id="map-data" 
+data-has-image="{% if location.image %}true{% else %}false{% endif %}"
+data-image-url="{% if location.image %}{{ location.image.url }}{% endif %}"
+data-location-url="{% url 'npc_cards:location' 0 %}"
+data-sublocations="{{ mapped_sublocations_json }}"
+style="display:none;">
+</div>
+
+<div class="location-header">
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration top-right"></div>
+    <div class="corner-decoration bottom-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+    
+    <h1>{{ location.name }}</h1>
+    {% if location.parent_location %}
+    <div class="breadcrumb-nav">
+        {% with parent=location.parent_location %}
+        {% include "npc_cards/location_tree_parents.html" with location=parent %}
+        {% endwith %}
+        &gt; {{ location.name }}
     </div>
+    {% endif %}
+</div>
+
+<div class="section">
+    <h2>Location Map</h2>
+    {% if location.image %}
+        <div class="map-container">
+            <canvas id="location-map" width="800" height="600"></canvas>
+            
+            <div id="map-marker-form" class="map-marker-form hidden">
+                <h3>Add New Sub-location</h3>
+                <form id="map-location-form" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="submit_map_location" value="1">
+                    {{ map_location_form.x_coord }}
+                    {{ map_location_form.y_coord }}
+                    <div class="form-field">
+                        <label for="{{ map_location_form.name.id_for_label }}">Name:</label>
+                        {{ map_location_form.name }}
+                    </div>
+                    <div class="form-field">
+                        <label for="{{ map_location_form.story.id_for_label }}">Description:</label>
+                        {{ map_location_form.story }}
+                    </div>
+                    <button type="submit">Create Location</button>
+                    <button type="button" id="cancel-marker">Cancel</button>
+                </form>
+            </div>
+            
+            <div class="map-controls">
+                <button id="add-location-btn" class="map-btn">Add Sub-location</button>
+                <button id="toggle-locations-btn" class="map-btn">Toggle Locations</button>
+                <span class="map-instructions">Click on the map to place a marker</span>
+            </div>
+        </div>
+    {% else %}
+        <div class="map-placeholder">
+            <p>No map image available for this location.</p>
+            <form method="POST" enctype="multipart/form-data" class="upload-map-form">
+                {% csrf_token %}
+                <input type="file" name="location_image" accept="image/*">
+                <button type="submit" name="upload_map">Upload Map</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
 
     <div class="section">
         <h2>Location Information</h2>
@@ -438,4 +609,183 @@
             <p>{{ location.secret }}</p>
         </div>
     {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we have a canvas element
+    const canvas = document.getElementById('location-map');
+    if (!canvas) return;
+    
+    // Get data from data container
+    const mapData = document.getElementById('map-data');
+    const hasImage = mapData.dataset.hasImage === 'true';
+    const imageUrl = mapData.dataset.imageUrl;
+    const locationUrl = mapData.dataset.locationUrl;
+    const sublocations = JSON.parse(mapData.dataset.sublocations || '[]');
+    
+    // Initialize Fabric.js canvas
+    const fabricCanvas = new fabric.Canvas('location-map');
+    let addingLocation = false;
+    let currentMarker = null;
+    
+    // Load the location image
+    if (hasImage) {
+        fabric.Image.fromURL(imageUrl, function(img) {
+            // Scale the image to fit the canvas
+            const scale = Math.min(
+                canvas.width / img.width,
+                canvas.height / img.height
+            );
+            
+            img.scale(scale);
+            img.selectable = false;
+            fabricCanvas.add(img);
+            fabricCanvas.centerObject(img);
+            
+            // Load existing sub-locations as markers
+            sublocations.forEach(function(sublocation) {
+                addMarker(sublocation.x_coord, sublocation.y_coord, sublocation.name, sublocation.id);
+            });
+        });
+    }
+    
+    // Function to add a marker to the map
+    function addMarker(x, y, name, id) {
+        const markerSize = 20;
+        const marker = new fabric.Circle({
+            left: x - markerSize/2,
+            top: y - markerSize/2,
+            radius: markerSize/2,
+            fill: '#7b241c',
+            stroke: '#fffcf6',
+            strokeWidth: 2,
+            selectable: false,
+            hoverCursor: 'pointer',
+            data: { id: id, name: name }
+        });
+        
+        const label = new fabric.Text(name, {
+            left: x,
+            top: y + markerSize/2 + 5,
+            fontSize: 14,
+            fill: '#5e1914',
+            textAlign: 'center',
+            originX: 'center',
+            selectable: false
+        });
+        
+        fabricCanvas.add(marker, label);
+        
+        // Add click event to navigate to the location (only for saved locations with valid IDs)
+        if (id) {
+            marker.on('mousedown', function() {
+                if (!addingLocation) {
+                    window.location.href = locationUrl.replace('0', id);
+                }
+            });
+        }
+        
+        return { marker, label };
+    }
+    
+    // Toggle adding location mode
+    document.getElementById('add-location-btn').addEventListener('click', function() {
+        addingLocation = !addingLocation;
+        this.classList.toggle('active');
+        document.querySelector('.map-instructions').style.display = addingLocation ? 'inline' : 'none';
+        fabricCanvas.defaultCursor = addingLocation ? 'crosshair' : 'default';
+        
+        // Hide form when toggling off add mode
+        if (!addingLocation) {
+            document.getElementById('map-marker-form').classList.add('hidden');
+            if (currentMarker) {
+                fabricCanvas.remove(currentMarker.marker);
+                fabricCanvas.remove(currentMarker.label);
+                currentMarker = null;
+            }
+        }
+    });
+    
+    // Canvas click event to add a new marker
+    fabricCanvas.on('mouse:down', function(options) {
+        if (!addingLocation) return;
+        
+        const pointer = fabricCanvas.getPointer(options.e);
+        
+        // Remove previous temp marker if exists
+        if (currentMarker) {
+            fabricCanvas.remove(currentMarker.marker);
+            fabricCanvas.remove(currentMarker.label);
+        }
+        
+        // Add temporary marker
+        currentMarker = addMarker(pointer.x, pointer.y, 'New Location', null);
+        
+        // Show the form - make sure it's visible
+        const form = document.getElementById('map-marker-form');
+        form.classList.remove('hidden');
+        
+        // Position the form near the cursor but ensure it's visible on screen
+        const rect = canvas.getBoundingClientRect();
+        const formLeft = Math.min(
+            rect.left + options.e.offsetX + 20, 
+            window.innerWidth - 320
+        );
+        const formTop = Math.min(
+            rect.top + options.e.offsetY - 100,
+            window.innerHeight - 300
+        );
+        
+        form.style.position = 'absolute';
+        form.style.left = formLeft + 'px';
+        form.style.top = formTop + 'px';
+        form.style.zIndex = '1000'; // Ensure it's on top
+        
+        // Set coordinates in the hidden form fields
+        document.getElementById('id_x_coord').value = pointer.x;
+        document.getElementById('id_y_coord').value = pointer.y;
+        
+        // Focus on the name field for immediate typing
+        document.querySelector('[name="name"]').focus();
+    });
+    
+    // Form validation before submit
+    document.getElementById('map-location-form').addEventListener('submit', function(e) {
+        const nameField = this.querySelector('[name="name"]');
+        if (!nameField.value.trim()) {
+            e.preventDefault();
+            nameField.style.border = '1px solid red';
+            alert('Please enter a name for the location');
+            nameField.focus();
+        }
+    });
+    
+    // Cancel button event
+    document.getElementById('cancel-marker').addEventListener('click', function() {
+        if (currentMarker) {
+            fabricCanvas.remove(currentMarker.marker);
+            fabricCanvas.remove(currentMarker.label);
+            currentMarker = null;
+        }
+        
+        document.getElementById('map-marker-form').classList.add('hidden');
+        addingLocation = false;
+        document.getElementById('add-location-btn').classList.remove('active');
+        document.querySelector('.map-instructions').style.display = 'none';
+    });
+    
+    // Toggle visibility of location markers
+    document.getElementById('toggle-locations-btn').addEventListener('click', function() {
+        fabricCanvas.getObjects().forEach(obj => {
+            if (obj.type === 'circle' || (obj.type === 'text' && obj !== fabricCanvas.backgroundImage)) {
+                obj.visible = !obj.visible;
+            }
+        });
+        fabricCanvas.renderAll();
+    });
+});
+</script>
 {% endblock %}

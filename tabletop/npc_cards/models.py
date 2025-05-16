@@ -151,5 +151,11 @@ class Location(models.Model): # has: npcs, items # is part of: universe
     parent_location = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='sub_locations')
     # npcs, ManyToOne trough FK in NPCInstance
     items = models.ManyToManyField('Item', blank=True)
+
+    # fields for map with locations on it
+    image = models.ImageField(upload_to='locations/', null=True, blank=True) #maybe later to $user/locations?
+    x_coord = models.FloatField(null=True, blank=True, help_text="X coordinate on parent's map")
+    y_coord = models.FloatField(null=True, blank=True, help_text="Y coordinate on parent's map")
+
     def __str__(self):
         return self.name

@@ -16,10 +16,23 @@ class SimpleLocationForm(forms.ModelForm):
     """Simplified form for creating locations from location detail page"""
     class Meta:
         model = Location
-        fields = ['name', 'story']
+        fields = ['name', 'story', 'image']
         widgets = {
             'story': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Brief description of this location'}),
         }
+
+class MapLocationForm(forms.ModelForm):
+    """Form for creating locations directly from the map"""
+    class Meta:
+        model = Location
+        fields = ['name', 'story']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Location name'}),
+            'story': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Brief description'}),
+        }
+
+    x_coord = forms.FloatField(widget=forms.HiddenInput())
+    y_coord = forms.FloatField(widget=forms.HiddenInput())
 
 class NPCCharacterForm(forms.ModelForm):
     """Form for creating/editing a character"""

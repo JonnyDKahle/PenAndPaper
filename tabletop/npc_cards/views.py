@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import NPCCharacter, Universe, Location, Item
 from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm, NPCCharacterBlueprintEditForm
-from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm
+from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm, MapLocationForm
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 # Create your views here.
 
@@ -31,10 +33,43 @@ def LocationDetailView(request, id):
     item_form = ItemCreateForm()
     character_form = NPCCharacterForm(initial={'location': location})
     sublocation_form = SimpleLocationForm()
+    map_location_form = MapLocationForm()
     parent_form = SimpleLocationForm()
+
+    # Get mapped sub-locations
+    mapped_sublocations = location.sub_locations.exclude(x_coord__isnull=True).exclude(y_coord__isnull=True)
+    
+    # Prepare sublocations data for JavaScript
+    mapped_sublocations_data = []
+    for sublocation in mapped_sublocations:
+        mapped_sublocations_data.append({
+            'id': sublocation.id,
+            'name': sublocation.name,
+            'x_coord': float(sublocation.x_coord),
+            'y_coord': float(sublocation.y_coord)
+        })
     
     if request.method == 'POST':
-        if 'submit_item' in request.POST:
+        if 'upload_map' in request.POST:
+            if 'location_image' in request.FILES:
+                location.image = request.FILES['location_image']
+                location.save()
+                return redirect('npc_cards:location', id=location.id)
+    
+        if 'submit_map_location' in request.POST:
+            # Process map-based location creation
+            map_location_form = MapLocationForm(request.POST)
+            if map_location_form.is_valid():
+                sublocation = map_location_form.save(commit=False)
+                sublocation.universe = location.universe
+                sublocation.parent_location = location
+                sublocation.creator = request.user
+                sublocation.x_coord = map_location_form.cleaned_data['x_coord']
+                sublocation.y_coord = map_location_form.cleaned_data['y_coord']
+                sublocation.save()
+                return redirect('npc_cards:location', id=location.id)
+
+        elif 'submit_item' in request.POST:
             # Process item form (existing code)
             item_form = ItemCreateForm(request.POST)
             if item_form.is_valid():
@@ -81,7 +116,10 @@ def LocationDetailView(request, id):
         'item_form': item_form,
         'character_form': character_form,
         'sublocation_form': sublocation_form,
+        'map_location_form': map_location_form,
         'parent_form': parent_form,
+        'mapped_sublocations': mapped_sublocations,
+        'mapped_sublocations_json': json.dumps(mapped_sublocations_data, cls=DjangoJSONEncoder),
     }
     return render(request, 'npc_cards/location_detail.html', context=context)
 
