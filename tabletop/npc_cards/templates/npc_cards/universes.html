@@ -55,6 +55,37 @@
         margin-bottom: 20px;
         text-align: center;
     }
+
+        .toggle-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .toggle-button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .toggle-button:hover {
+        background-color: #2980b9;
+    }
+    
+    .section-header {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin: 20px 0 15px 0;
+    }
+    
+    .other-universes {
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -64,9 +95,17 @@
         <p>Explore your campaign worlds and their locations</p>
     </div>
 
+    <div class="toggle-container">
+        <button id="toggle-universes" class="toggle-button">Show Other Users' Universes</button>
+    </div>
+
     <div class="section">
+        <div class="section-header">
+            <h2>Your Universes</h2>
+        </div>
+        
         <div class="universe-grid">
-            {% for universe in all_universes %}
+            {% for universe in user_universes %}
                 <div class="universe-card">
                     <div class="universe-header">{{ universe.name }}</div>
                     
@@ -85,9 +124,61 @@
                 </div>
             {% empty %}
                 <div class="universe-card">
-                    <p>No universes available. Create one to get started!</p>
+                    <p>You haven't created any universes yet. Create one to get started!</p>
                 </div>
             {% endfor %}
         </div>
+        
+        <!-- Other users' universes (initially hidden) -->
+        <div id="other-universes" class="other-universes">
+            <div class="section-header">
+                <h2>Other Users' Universes</h2>
+            </div>
+            
+            <div class="universe-grid">
+                {% for universe in other_universes %}
+                    <div class="universe-card">
+                        <div class="universe-header">
+                            {{ universe.name }}
+                            <span style="font-size: 0.8em; opacity: 0.7;"> (by {{ universe.creator.username }})</span>
+                        </div>
+                        
+                        <div class="location-tree">
+                            {% for location in universe.locations.all %}
+                                {% if not location.parent_location %}
+                                    <div class="location-item">
+                                        <a href="{% url 'npc_cards:location' location.id %}" class="location-link">{{ location.name }}</a>
+                                        {% include "npc_cards/location_tree.html" with location=location %}
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <p>No locations in this universe</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="universe-card">
+                        <p>No universes from other users available.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('toggle-universes');
+            const otherUniverses = document.getElementById('other-universes');
+            
+            toggleButton.addEventListener('click', function() {
+                if (otherUniverses.style.display === 'block') {
+                    otherUniverses.style.display = 'none';
+                    toggleButton.textContent = 'Show Other Users\' Universes';
+                } else {
+                    otherUniverses.style.display = 'block';
+                    toggleButton.textContent = 'Hide Other Users\' Universes';
+                }
+            });
+        });
+    </script>
 {% endblock %}

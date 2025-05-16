@@ -9,15 +9,19 @@ def index(request):
     return render(request, 'npc_cards/index.html')
 
 def NPCCharacterCardsView(request):
-    all_characters = NPCCharacter.objects.all()
+    all_characters = NPCCharacter.objects.filter(creator=request.user)
 
     context = {'npc_cards':all_characters}
     return render(request, 'npc_cards/npc_charactercards.html', context=context)
 
 def UniverseView(request):
-    all_universes = Universe.objects.all()
+    all_universes = Universe.objects.filter(creator = request.user)
+    other_universes = Universe.objects.exclude(creator = request.user)
 
-    context = {'all_universes':all_universes}
+    context = {
+        'all_universes':all_universes,
+        'other_universes':other_universes,
+        }
     return render(request, 'npc_cards/universes.html', context=context)
 
 def LocationDetailView(request, id):
@@ -147,6 +151,7 @@ def create_character(request):
             form = NPCCharacterForm(request.POST, request.FILES)
             if form.is_valid():
                 character = form.save(commit=False)
+                character.creator = request.user
                 character.is_blueprint = False
                 character.save()
                 form.save_m2m()
@@ -171,7 +176,9 @@ def edit_character(request, id):
     if request.method == 'POST':
         form = NPCCharacterForm(request.POST, request.FILES, instance=character)
         if form.is_valid():
-            form.save()
+            character = form.save(commit=False)
+            character.creator = request.user
+            character.save()
             return redirect('npc_cards:character_detail', id=character.id)
     else:
         form = NPCCharacterForm(instance=character)

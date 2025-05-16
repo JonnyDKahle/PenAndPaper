@@ -1,7 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class NPCCharacter(models.Model):
+    # Creator
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='characters', null=True)
+
     # Blueprint Attributes
     is_blueprint = models.BooleanField(default=False)
     blueprint = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='instances', null=True, blank=True)
@@ -130,12 +134,16 @@ class Item(models.Model):
         return self.name
 
 class Universe(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='universes', null=True)
+
     name = models.CharField(max_length=100)
     # FK to the GameMaster (Who is just a user)
     def __str__(self):
         return self.name
     
 class Location(models.Model): # has: npcs, items # is part of: universe
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='locations', null=True)
+
     name = models.CharField(max_length=100)
     story = models.TextField(null=True, blank=True)
     secret = models.TextField(blank=True, null=True)

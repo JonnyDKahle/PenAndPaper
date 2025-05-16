@@ -1,10 +1,16 @@
 from django import forms
-from .models import Location, NPCCharacter, Item
+from .models import Location, NPCCharacter, Item, Universe
 
+# class LocationForm(forms.ModelForm):
+#     class Meta:
+#         model = Location
+#         fields = '__all__'
 class LocationForm(forms.ModelForm):
-    class Meta:
-        model = Location
-        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['universe'].queryset = Universe.objects.filter(creator=user)
+        self.fields['parent_location'].queryset = Location.objects.filter(creator=user)
 
 class SimpleLocationForm(forms.ModelForm):
     """Simplified form for creating locations from location detail page"""
@@ -19,7 +25,7 @@ class NPCCharacterForm(forms.ModelForm):
     """Form for creating/editing a character"""
     class Meta:
         model = NPCCharacter
-        exclude = ['is_blueprint', 'blueprint']
+        exclude = ['is_blueprint', 'blueprint', 'creator']
         widgets = {
             'race':forms.Select(),
             'alignment':forms.Select(),
