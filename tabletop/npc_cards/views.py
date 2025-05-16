@@ -4,6 +4,8 @@ from .forms import LocationForm, NPCCharacterForm, NPCCharacterFormBlueprintForm
 from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm, MapLocationForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
@@ -123,6 +125,51 @@ def LocationDetailView(request, id):
     }
     return render(request, 'npc_cards/location_detail.html', context=context)
 
+def location_edit(request, id):
+    location = get_object_or_404(Location, id=id)
+    
+    if request.method == 'POST':
+        form = LocationForm(request.POST, request.FILES, instance=location)
+        if form.is_valid():
+            form.save()
+            return redirect('npc_cards:location', id=location.id)
+    else:
+        form = LocationForm(instance=location)
+    
+    context = {
+        'form': form,
+        'location': location,
+    }
+    return render(request, 'npc_cards/location_edit.html', context=context)
+
+@login_required
+def location_delete(request, id):
+    location = get_object_or_404(Location, id=id)
+    parent_id = None
+    
+    if location.parent_location:
+        parent_id = location.parent_location.id
+    
+    # Get return location ID from form if provided
+    if request.method == 'POST':
+        return_to = request.POST.get('return_to')
+        if return_to:
+            try:
+                return_to_id = int(return_to)
+                if Location.objects.filter(id=return_to_id).exists():
+                    parent_id = return_to_id
+            except:
+                pass
+        
+        location.delete()
+        
+        if parent_id:
+            return redirect('npc_cards:location', id=parent_id)
+        else:
+            return redirect('npc_cards:index')
+    
+    return redirect('npc_cards:location', id=id)
+
 def blueprint_list(request):
     """Show all character blueprints"""
     blueprints = NPCCharacter.objects.filter(is_blueprint=True)
@@ -227,6 +274,23 @@ def edit_character(request, id):
     }
     return render(request, 'npc_cards/character_edit.html', context=context)
 
+@login_required
+def delete_character(request, id):
+    character = get_object_or_404(NPCCharacter, id=id)
+    location_id = None
+
+    if character.location:
+        location_id = character.location.id
+
+    if request.method == 'POST':
+        character.delete()
+        if location_id:
+            return redirect('npc_cards:location', id=location_id)
+        else:
+            return redirect('npc_cards:character_list')
+        
+    return redirect('npc_cards:character_detail', id=id)
+
 def edit_blueprint(request, id):
     blueprint = get_object_or_404(NPCCharacter, id=id)
 
@@ -254,3 +318,45 @@ def item_detail(request, id):
 
     context = {'item':item}
     return render(request, 'npc_cards/item_detail.html', context=context)
+
+def item_edit(request, id):
+    item = get_object_or_404(Item, id=id)
+    
+    if request.method == 'POST':
+        form = ItemCreateForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('npc_cards:item_detail', id=item.id)
+    else:
+        form = ItemCreateForm(instance=item)
+    
+    context = {
+        'form': form,
+        'item': item,
+    }
+    return render(request, 'npc_cards/item_edit.html', context=context)
+
+def item_delete(request, id):
+    item = get_object_or_404(Item, id=id)
+    location = None
+    
+    # Find a location that has this item to redirect back to
+    for loc in Location.objects.filter(items=item):
+        location = loc
+        break
+    
+    if request.method == 'POST':
+        # Remove the item from all locations
+        for loc in Location.objects.filter(items=item):
+            loc.items.remove(item)
+        
+        # Delete the item
+        item.delete()
+        
+        # Redirect back to the location if we found one
+        if location:
+            return redirect('npc_cards:location', id=location.id)
+        else:
+            return redirect('npc_cards:index')
+    
+    return redirect('npc_cards:item_detail', id=id)

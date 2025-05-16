@@ -421,6 +421,38 @@
 .map-marker-form button[type="button"]:hover {
     background: #777;
 }
+
+.action-buttons {
+    float: right;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.action-buttons:hover {
+    opacity: 1;
+}
+
+.edit-btn, .delete-btn {
+    display: inline-block;
+    padding: 2px 5px;
+    margin-left: 5px;
+    color: #7b241c;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+.edit-btn:hover {
+    background-color: #e9dfc7;
+}
+
+.delete-btn:hover {
+    background-color: #f8e6e6;
+}
+
+.action-buttons form {
+    display: inline;
+}
 </style>
 {% endblock %}
 
@@ -530,7 +562,17 @@ style="display:none;">
                 <h3>Items</h3>
                 <ul class="info-list">
                     {% for item in location.items.all %}
-                        <li><a href="{% url 'npc_cards:item_detail' item.id %}">{{ item.name }}</a></li>
+                        <li>
+                            <a href="{% url 'npc_cards:item_detail' item.id %}">{{ item.name }}</a>
+                            <span class="action-buttons">
+                                <a href="{% url 'npc_cards:item_edit' item.id %}" class="edit-btn" title="Edit">✏️</a>
+                                <form method="POST" action="{% url 'npc_cards:item_delete' item.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-btn" title="Delete" 
+                                            onclick="return confirm('Are you sure you want to delete {{ item.name }}?')">🗑️</button>
+                                </form>
+                            </span>
+                        </li>
                     {% empty %}
                         <li>No items in this location</li>
                     {% endfor %}
@@ -558,6 +600,14 @@ style="display:none;">
                     {% for npc in location.npcs.all %}
                         <li>
                             <a href="{% url 'npc_cards:character_detail' npc.id %}">{{ npc.name }}</a>
+                            <span class="action-buttons">
+                                <a href="{% url 'npc_cards:edit_character' npc.id %}" class="edit-btn" title="Edit">✏️</a>
+                                <form method="POST" action="{% url 'npc_cards:character_delete' npc.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-btn" title="Delete" 
+                                            onclick="return confirm('Are you sure you want to delete {{ npc.name }}?')">🗑️</button>
+                                </form>
+                            </span>
                         </li>
                     {% empty %}
                         {% if not has_sublocation_npcs %}
@@ -585,6 +635,15 @@ style="display:none;">
                     {% for sublocation in location.sub_locations.all %}
                         <li>
                             <a href="{% url 'npc_cards:location' sublocation.id %}">{{ sublocation.name }}</a>
+                            <span class="action-buttons">
+                                <a href="{% url 'npc_cards:location_edit' sublocation.id %}" class="edit-btn" title="Edit">✏️</a>
+                                <form method="POST" action="{% url 'npc_cards:location_delete' sublocation.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="return_to" value="{{ location.id }}">
+                                    <button type="submit" class="delete-btn" title="Delete" 
+                                            onclick="return confirm('Are you sure you want to delete {{ sublocation.name }} and all its contents?')">🗑️</button>
+                                </form>
+                            </span>
                         </li>
                     {% empty %}
                         <li>No sub-locations</li>

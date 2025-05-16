@@ -7,6 +7,8 @@ urlpatterns = [
     # path('npc_cards/', NPCCharacterCardsView),
     path('universes/', views.UniverseView, name='universes'),
     path('location/<int:id>/', views.LocationDetailView, name='location'),
+    path('location/<int:id>/edit/', views.location_edit, name='location_edit'),
+    path('location/<int:id>/delete/', views.location_delete, name='location_delete'),
     # path('create_npcinstance/', CreateNPCInstaceView, name='create_npcinstance'),
 
     # Character & Blueprint URLs
@@ -19,9 +21,12 @@ urlpatterns = [
     path('characters/create/', views.create_character, name='create_character'),
     path('characters/<int:id>/', views.character_detail, name='character_detail'),
     path('characters/<int:id>/edit/', views.edit_character, name='edit_character'),
+    path('character/<int:id>/delete/', views.delete_character, name='character_delete'),
 
     # Item URLs
     # path('location/<int:location_id>/items/create', views.create_item, name='create_item'),
     # path('items/create', views.create_item, name='create_item'),
     path('items/<int:id>/', views.item_detail, name='item_detail'),
+    path('item/<int:id>/edit/', views.item_edit, name='item_edit'),
+    path('item/<int:id>/delete/', views.item_delete, name='item_delete'),
 ]
