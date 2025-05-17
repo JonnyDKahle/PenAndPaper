@@ -5,7 +5,9 @@ from .forms import NPCCharacterBlueprintForm, ItemCreateForm, SimpleLocationForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -360,3 +362,32 @@ def item_delete(request, id):
             return redirect('npc_cards:index')
     
     return redirect('npc_cards:item_detail', id=id)
+
+@require_POST
+def update_character_stat(request, character_id):
+    # Get the character
+    character = get_object_or_404(NPCCharacter, id=character_id)
+    
+    try:
+        # Parse JSON data
+        data = json.loads(request.body)
+        field = data.get('field')
+        value = data.get('value')
+        
+        # Validate field name to prevent potential security issues
+        allowed_fields = [
+            'strength', 'dexterity', 'constitution', 
+            'intelligence', 'wisdom', 'charisma',
+            'armor_class', 'health_points', 'speed'
+        ]
+        
+        if field not in allowed_fields:
+            return JsonResponse({'success': False, 'error': 'Invalid field'})
+        
+        # Update the field
+        setattr(character, field, value)
+        character.save()
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
