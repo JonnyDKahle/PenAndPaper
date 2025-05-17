@@ -378,7 +378,8 @@ def update_character_stat(request, character_id):
         allowed_fields = [
             'strength', 'dexterity', 'constitution', 
             'intelligence', 'wisdom', 'charisma',
-            'armor_class', 'health_points', 'speed'
+            'armor_class', 'health_points', 'speed',
+            'notes'
         ]
         
         if field not in allowed_fields:
